@@ -24,6 +24,7 @@ function App() {
       const res = await fetch(API_URL);
       if (!res.ok) throw new Error(`Error ${res.status}`);
       const data = await res.json();
+      
       setNotes(data);
     } catch (err) {
       console.error(err);
