@@ -31,6 +31,17 @@ DEBUG = os.getenv("DJANGO_DEBUG", "TRUE") == "TRUE"
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 
+#JWT para auth
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
+    ),
+}
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -50,6 +61,7 @@ INSTALLED_APPS = [
     #cores
 
     'corsheaders',
+
 ]
 
 
