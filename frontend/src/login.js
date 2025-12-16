@@ -1,5 +1,7 @@
+import { api } from "./api";
+
 export async function login(email, password) {
-  const res = await axios.post("http://127.0.0.1:8000/api/token/", {
+  const res = await api.post("/token/", {
     username: email,  // OJO: se manda como username, pero contiene email
     password,
   });

@@ -16,20 +16,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from core.auth_views import EmailTokenObtainPairView
-
-from django.http import JsonResponse
-
-def home(request):
-    return JsonResponse({"message":
-    "Backend funcionando"
-    })
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 urlpatterns = [
-    path('', home),
-    path('admin/', admin.site.urls),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(),name='token_refresh'),
-    path('api/', include('notes.urls')),
+    path("admin/", admin.site.urls),
+
+    # 🔐 JWT
+    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+
+    # 📦 API
+    path("api/", include("notes.urls")),
 ]
