@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 
@@ -11,13 +11,21 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
 
+  // ✅ Este useEffect va aquí, NO dentro del submit
+  useEffect(() => {
+    if (localStorage.getItem("access")) {
+      nav("/notes", { replace: true });
+    }
+  }, [nav]);
+
   const onSubmit = async (e) => {
     e.preventDefault();
     setErr("");
     setLoading(true);
+
     try {
       await login(email, password);
-      nav("/", { replace: true });
+      nav("/notes", { replace: true });
     } catch (e2) {
       const msg =
         e2?.response?.data?.detail ||

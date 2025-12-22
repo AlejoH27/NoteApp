@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { api } from "../api";
-import { useAuth } from "../auth/AuthContext";
+import Header from "../components/header";
+//import { useAuth } from "../auth/AuthContext";
 
 export default function Notes() {
-  const { logout } = useAuth();
 
   const [notes, setNotes] = useState([]);
   const [title, setTitle] = useState("");
@@ -36,10 +36,15 @@ export default function Notes() {
   }, []);
 
   return (
+    <>
+    <Header />
+
     <div style={{ padding: 16, maxWidth: 800, margin: "0 auto" }}>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <h2>Notas</h2>
-        <button onClick={logout}>Cerrar sesión</button>
+        <div>
+        
+    </div>
       </div>
 
       <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
@@ -60,6 +65,8 @@ export default function Notes() {
           </li>
         ))}
       </ul>
+
     </div>
+    </>
   );
 }
