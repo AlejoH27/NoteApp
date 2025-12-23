@@ -69,6 +69,9 @@ export default function Notes() {
   };
 
   const deleteNote = async (id) => {
+    const ok = window.confirm("Seguro que quieres borrar esta nota? Esta accion no se puede desahacer.");
+    if(!ok) return;
+
     setErr("");
     try {
       await api.delete(`/notes/${id}/`);
@@ -111,7 +114,7 @@ export default function Notes() {
 
   return (
     <>
-      <Header />
+      <Header title="Notas"/>
 
       <div style={styles.page}>
         <div style={styles.container}>
