@@ -161,7 +161,7 @@ STATIC_URL = 'static/'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.15173",
-    "https://noteappf.onrender.com"
+    "https://noteappf.onrender.com",
 ]
 
 from corsheaders.defaults import default_headers
