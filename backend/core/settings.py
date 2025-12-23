@@ -169,3 +169,5 @@ from corsheaders.defaults import default_headers
 CORS_ALLOWED_HEADERS = list(default_headers) + ["authorization"]
 
 CORS_ALLOWED_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = ["https://noteappf.onrender.com"],
