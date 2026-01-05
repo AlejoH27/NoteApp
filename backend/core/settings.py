@@ -170,4 +170,8 @@ CORS_ALLOWED_HEADERS = list(default_headers) + ["authorization"]
 
 CORS_ALLOWED_CREDENTIALS = True
 
+<<<<<<< HEAD
 # CSRF_TRUSTED_ORIGINS = ["https://noteappf.onrender.com"],
+=======
+#CSRF_TRUSTED_ORIGINS = ["https://noteappf.onrender.com"],
+>>>>>>> d748f1adbc3e805ce97ffe48bbef7d9393804ec1
