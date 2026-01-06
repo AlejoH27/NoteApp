@@ -62,6 +62,8 @@ export default function Login() {
 
         {err && <p style={{ color: "crimson" }}>{err}</p>}
       </form>
+
+      <p style={{ marginTop: 12}}> ¿No tienes cuenta? <a href="/register">Registrate aqui</a> </p>
     </div>
   );
 }
