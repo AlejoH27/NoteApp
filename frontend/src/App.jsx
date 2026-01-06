@@ -3,7 +3,7 @@ import { AuthProvider } from "./auth/AuthContext";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import Login from "./pages/Login";
 import Notes from "./pages/Notes";
-import Register from "./pages/register"; //solo marca en rojo, pero no afecta
+//import Register from "./pages/register"; //solo marca en rojo, pero no afecta
 
 export default function App() {
   return (
