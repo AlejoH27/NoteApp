@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
-
+import { Link } from "react-router-dom";
 export default function Header({ title = "NotesApp" }) {
   const nav = useNavigate();
   const { logout } = useAuth();
@@ -17,6 +17,7 @@ export default function Header({ title = "NotesApp" }) {
         <span style={styles.title}>{title}</span>
       </div>
 
+     <Link to="/profile">Perfil</Link>
       <nav style={styles.nav}>
         <button style={styles.btn} onClick={() => nav("/notes")}>
           Notas

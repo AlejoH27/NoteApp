@@ -3,7 +3,9 @@ import { AuthProvider } from "./auth/AuthContext";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import Login from "./pages/Login";
 import Notes from "./pages/Notes";
-import Register from "./pages/Register"; 
+import Register from "./pages/Register";
+import Profile from "./pages/Profile";
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -22,6 +24,13 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
+
 
           <Route 
             path="*"
