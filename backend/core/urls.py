@@ -20,6 +20,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .auth_views import LogoutView
 from .auth_views import RegisterView
 from .auth_views import EmailTokenObtainPairView
+from .auth_views import ProfileView
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -31,4 +33,6 @@ urlpatterns = [
     path("api/logout/", LogoutView.as_view(), name="logout"),
 
     path("api/", include("notes.urls")),
+
+    path("api/profile/", ProfileView.as_view(), name="profile"),
 ]

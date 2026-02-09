@@ -8,7 +8,9 @@ from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from rest_framework import generics, permissions
-from .serializers import RegisterSerializer
+from .serializers import RegisterSerializer, ProfileSerializer
+
+from rest_framework.permissions import IsAuthenticated
 
 class EmailTokenObtainPairView(TokenObtainPairView):
     serializer_class = EmailTokenObtainPairSerializer
@@ -31,3 +33,17 @@ class LogoutView(APIView):
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [permissions.AllowAny]
+
+class ProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        ser = ProfileSerializer(request.user)
+        return Response(ser.data)
+    
+    def patch (self, request): 
+        ser = ProfileSerializer(request.user, data = request.data, partial = True)
+
+        ser.is_valid(raise_exception=True)
+        ser.save()
+        return Response(ser.data, status=status.HTTP_200_OK)
