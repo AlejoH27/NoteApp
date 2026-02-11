@@ -7,6 +7,7 @@ export default function Profile() {
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState("");
   const [ok, setOk] = useState("");
+  const [avatar, setAvatar] = useState(null);
 
   const load = async () => {
     setErr(""); setOk("");
@@ -26,24 +27,29 @@ export default function Profile() {
   const onChange = (k) => (e) => setForm((p) => ({ ...p, [k]: e.target.value }));
 
   const onSave = async (e) => {
-    e.preventDefault();
-    setErr(""); setOk("");
-    setSaving(true);
-    try {
-      const res = await api.patch("/profile/", {
-        username: form.username,
-        first_name: form.first_name,
-        last_name: form.last_name,
-      });
-      setForm(res.data);
-      setOk("Perfil actualizado ✅");
-    } catch (e2) {
-      const data = e2?.response?.data;
-      setErr((data && JSON.stringify(data)) || "No se pudo guardar.");
-    } finally {
-      setSaving(false);
-    }
-  };
+  e.preventDefault();
+  setErr("");
+  setOk("");
+
+  try {
+    const fd = new FormData();
+    fd.append("username", form.username || "");
+    fd.append("first_name", form.first_name || "");
+    fd.append("last_name", form.last_name || "");
+
+    // IMPORTANTÍSIMO: el nombre "avatar" debe coincidir con el backend
+    if (avatar) fd.append("avatar", avatar);
+
+    const res = await api.patch("/profile/", fd, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    setOk("Guardado ✅");
+    setForm(res.data);
+  } catch (e) {
+    setErr("No se pudo guardar el perfil.");
+  }
+};
 
   if (loading) return <div style={{ padding: 20 }}>Cargando perfil...</div>;
 
@@ -52,6 +58,23 @@ export default function Profile() {
       <h2>Perfil</h2>
 
       <form onSubmit={onSave} style={{ display: "grid", gap: 10 }}>
+
+        <label>
+            Foto de perfil
+            <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setAvatar(e.target.files[0])}
+            />
+          {form.avatar && (
+            <img
+            src={form.avatar}
+            alt="avatar"
+            style={{width: 120, borderRadius: "50%"}}
+            />
+          )}
+        </label>
+
         <label>
           Usuario
           <input value={form.username || ""} onChange={onChange("username")} />

@@ -3,6 +3,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 
 from django.contrib.auth.models import User
+from .models import Profile
 
 User = get_user_model()
 
@@ -50,8 +51,18 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.save()
         return user
     
-class ProfileSerializer(serializers.ModelSerializer):
+class UserProfileSerializer(serializers.ModelSerializer):
+
+    avatar = serializers.ImageField(source="profile.avatar", required=False, allow_null=True)
+
     class Meta:
         model = User
         fields = ["id", "username", "email", "first_name", "last_name"]
         read_only_fields = ["id", "email"]
+
+class Avatarserializer(serializers.ModelSerializer):
+    avatar = serializers.ImageField(required=False)
+
+    class Meta:
+        model = Profile
+        fields = ["avatar"]

@@ -73,6 +73,8 @@ INSTALLED_APPS = [
 
     'corsheaders',
 
+    'core.apps.CoreConfig', 
+
 ]
 
 
@@ -171,3 +173,10 @@ CORS_ALLOWED_HEADERS = list(default_headers) + ["authorization"]
 CORS_ALLOWED_CREDENTIALS = True
 
 # CSRF_TRUSTED_ORIGINS = ["https://noteappf.onrender.com"],
+
+
+
+#Media de la aplicacion
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
