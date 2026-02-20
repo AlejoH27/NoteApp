@@ -1,11 +1,13 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .auth_serializers import EmailTokenObtainPairSerializer
+from core.models import Profile
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 
 from rest_framework import generics, permissions
 from .serializers import RegisterSerializer, ProfileSerializer
@@ -37,12 +39,21 @@ class RegisterView(generics.CreateAPIView):
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+
     def get(self, request):
-        ser = ProfileSerializer(request.user)
+
+        Profile.objects.get_or_create(user=request.user)
+
+        ser = ProfileSerializer(request.user, context={"request" : request})
+
         return Response(ser.data)
     
-    def patch (self, request): 
-        ser = ProfileSerializer(request.user, data = request.data, partial = True)
+    def patch (self, request):
+
+        Profile.objects.get_or_create(user=request.user)
+
+        ser = ProfileSerializer(request.user, data = request.data, partial = True, context={"request" : request})
 
         ser.is_valid(raise_exception=True)
         ser.save()

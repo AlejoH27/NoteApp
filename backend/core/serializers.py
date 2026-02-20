@@ -1,8 +1,10 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
+
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 
-from django.contrib.auth.models import User
+from .models import Profile
 
 User = get_user_model()
 
@@ -51,7 +53,27 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
     
 class ProfileSerializer(serializers.ModelSerializer):
+
+    photo = serializers.ImageField(source="profile.photo", required=False, allow_null=True)
+
     class Meta:
         model = User
-        fields = ["id", "username", "email", "first_name", "last_name"]
+        fields = ["id", "username", "email", "first_name", "last_name", "photo"]
         read_only_fields = ["id", "email"]
+
+    def update (self, instance, validated_data):
+        profile_data = validated_data.pop("profile", {})
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+            instance.save()
+
+            profile, _ = Profile.objects.get_or_create(user=instance)
+        
+        if "photo" in profile_data:
+            profile.photo = profile_data["photo"]
+            profile.save()
+        return instance
+
+
+

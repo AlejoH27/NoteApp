@@ -28,7 +28,7 @@ load_dotenv(BASE_DIR / ".env")
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "insegura-dev")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 
@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     #cores
 
     'corsheaders',
+    'core.apps.CoreConfig',
 
 ]
 
@@ -171,3 +172,6 @@ CORS_ALLOWED_HEADERS = list(default_headers) + ["authorization"]
 CORS_ALLOWED_CREDENTIALS = True
 
 # CSRF_TRUSTED_ORIGINS = ["https://noteappf.onrender.com"],
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
