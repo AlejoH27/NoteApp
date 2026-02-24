@@ -20,6 +20,33 @@ from datetime import timedelta
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+CLOUDINARY_STORAGE = {
+        "CLOUD_NAME": 
+    os.getenv("CLOUDINARY_CLOUD_NAME"), 
+        "API_KEY":
+    os.getenv("CLOUDINARY_API_KEY"), 
+        "API_SECRET": 
+    os.getenv("CLOUDINARY_API_SECRET"),
+}
+
+print("CLOUD:", os.getenv("CLOUDINARY_CLOUD_NAME"))
+print("SECRET:", os.getenv("CLOUDINARY_API_SECRET"))
+print("STORAGE:", STORAGES)
+
+if not CLOUDINARY_STORAGE["CLOUD_NAME"]:
+    print("Cloudinary no configurado : Falta CLOUDINARY_CLOUD_NAME")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -178,20 +205,3 @@ CORS_ALLOWED_HEADERS = list(default_headers) + ["authorization"]
 CORS_ALLOWED_CREDENTIALS = True
 
 # CSRF_TRUSTED_ORIGINS = ["https://noteappf.onrender.com"],
-
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
-
-DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
-
-CLOUDINARY_STORAGE = {
-    "CLOUD_NAME": 
-    os.getenv("CLOUDINARY_CLOUD_NAME"), 
-    "API_KEY":
-    os.getenv("CLOUDINARY_API_KEY"), 
-    "API_SECRET": 
-    os.getenv("CLOUDINARY_SECRET"),
-}
-
-if not CLOUDINARY_STORAGE["CLOUD_NAME"]:
-    print("Cloudinary no configurado : Falta CLOUDINARY_CLOUD_NAME")
