@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
+import "../styles/Login.css";
 
 export default function Login() {
   const { login } = useAuth();
@@ -11,7 +12,6 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
 
-  // ✅ Este useEffect va aquí, NO dentro del submit
   useEffect(() => {
     if (localStorage.getItem("access")) {
       nav("/notes", { replace: true });
@@ -37,33 +37,51 @@ export default function Login() {
   };
 
   return (
-    <div style={{ maxWidth: 420, margin: "60px auto", padding: 16 }}>
-      <h2>Iniciar sesión</h2>
+    <div className="login-page">
+      <div className="login-card">
+        <div className="login-top">
+          <h2 className="login-title">Iniciar sesión</h2>
+          <p className="login-subtitle">Accede para ver tus notas y tu perfil.</p>
+        </div>
 
-      <form onSubmit={onSubmit} style={{ display: "grid", gap: 10 }}>
-        <input
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          type="text"
-          required
-        />
-        <input
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          type="password"
-          required
-        />
+        {err && <div className="login-alert">{err}</div>}
 
-        <button disabled={loading} type="submit">
-          {loading ? "Entrando..." : "Entrar"}
-        </button>
+        <form onSubmit={onSubmit} className="login-form">
+          <label className="login-label">
+            Email
+            <input
+              className="login-input"
+              placeholder="tu@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              required
+              autoComplete="email"
+            />
+          </label>
 
-        {err && <p style={{ color: "crimson" }}>{err}</p>}
-      </form>
+          <label className="login-label">
+            Contraseña
+            <input
+              className="login-input"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              required
+              autoComplete="current-password"
+            />
+          </label>
 
-      <p style={{ marginTop: 12}}> ¿No tienes cuenta? <a href="/register">Registrate aqui</a> </p>
+          <button className="login-btn" disabled={loading} type="submit">
+            {loading ? "Entrando..." : "Entrar"}
+          </button>
+        </form>
+
+        <p className="login-footer">
+          ¿No tienes cuenta? <a className="login-link" href="/register">Regístrate aquí</a>
+        </p>
+      </div>
     </div>
   );
 }

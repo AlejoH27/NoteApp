@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { api } from "../api";
 import Header from "../components/header";
+import "../styles/Notes.css";
 
 export default function Notes() {
   const [notes, setNotes] = useState([]);
@@ -69,8 +70,10 @@ export default function Notes() {
   };
 
   const deleteNote = async (id) => {
-    const ok = window.confirm("Seguro que quieres borrar esta nota? Esta accion no se puede desahacer.");
-    if(!ok) return;
+    const ok = window.confirm(
+      "Seguro que quieres borrar esta nota? Esta acción no se puede deshacer."
+    );
+    if (!ok) return;
 
     setErr("");
     try {
@@ -114,51 +117,47 @@ export default function Notes() {
 
   return (
     <>
-      <Header title="Notas"/>
+      <Header title="Notas" />
 
-      <div style={styles.page}>
-        <div style={styles.container}>
-          <div style={styles.topRow}>
+      <div className="notes-page">
+        <div className="notes-container">
+          <div className="notes-top">
             <div>
-              <h1 style={styles.h1}>Notas</h1>
-              <p style={styles.subtitle}>Crea, edita y organiza tus notas.</p>
+              <h1 className="notes-h1">Notas</h1>
+              <p className="notes-subtitle">Crea, edita y organiza tus notas.</p>
             </div>
           </div>
 
-          {err && <div style={styles.alert}>{err}</div>}
+          {err && <div className="notes-alert">{err}</div>}
 
           {/* Crear */}
-          <div style={styles.card}>
-            <div style={styles.cardTitle}>Nueva nota</div>
+          <div className="notes-card">
+            <div className="notes-card-title">Nueva nota</div>
 
-            <div style={styles.formGrid}>
-              <label style={styles.label}>
+            <div className="notes-form">
+              <label className="notes-label">
                 Título
                 <input
-                  style={styles.input}
+                  className="notes-input"
                   placeholder="Ej. Recordatorio"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                 />
               </label>
 
-              <label style={styles.label}>
+              <label className="notes-label">
                 Contenido
                 <input
-                  style={styles.input}
+                  className="notes-input"
                   placeholder="Ej. Llamar al proveedor..."
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                 />
               </label>
 
-              <div style={styles.actionsRow}>
+              <div className="notes-actions-row">
                 <button
-                  style={{
-                    ...styles.primaryBtn,
-                    opacity: !canCreate || saving ? 0.6 : 1,
-                    cursor: !canCreate || saving ? "not-allowed" : "pointer",
-                  }}
+                  className="notes-btn notes-btn-primary"
                   disabled={!canCreate || saving}
                   onClick={createNote}
                 >
@@ -166,7 +165,7 @@ export default function Notes() {
                 </button>
 
                 <button
-                  style={styles.ghostBtn}
+                  className="notes-btn notes-btn-ghost"
                   type="button"
                   onClick={() => {
                     setTitle("");
@@ -180,32 +179,32 @@ export default function Notes() {
             </div>
           </div>
 
-          {/* Listado */}
-          <div style={styles.listHeader}>
-            <h2 style={styles.h2}>Tus notas</h2>
-            <span style={styles.badge}>{notes.length}</span>
+          {/* Header listado */}
+          <div className="notes-list-header">
+            <h2 className="notes-h2">Tus notas</h2>
+            <span className="notes-badge">{notes.length}</span>
           </div>
 
           {loading ? (
-            <div style={styles.card}>Cargando notas...</div>
+            <div className="notes-card">Cargando notas...</div>
           ) : notes.length === 0 ? (
-            <div style={styles.card}>
+            <div className="notes-card">
               Aún no hay notas. Crea la primera arriba 👆
             </div>
           ) : (
-            <div style={styles.grid}>
+            <div className="notes-grid">
               {notes.map((n) => {
                 const isEditing = editingId === n.id;
 
                 return (
-                  <div key={n.id} style={styles.noteCard}>
+                  <div key={n.id} className="note-card">
                     {!isEditing ? (
                       <>
-                        <div style={styles.noteTop}>
-                          <div style={styles.noteTitle}>
+                        <div className="note-top">
+                          <div className="note-title">
                             {n.title?.trim() ? n.title : "Sin título"}
                           </div>
-                          <div style={styles.noteDate}>
+                          <div className="note-date">
                             {n.created_at
                               ? new Date(n.created_at).toLocaleString()
                               : ""}
@@ -213,20 +212,20 @@ export default function Notes() {
                         </div>
 
                         {n.content?.trim() ? (
-                          <div style={styles.noteContent}>{n.content}</div>
+                          <div className="note-content">{n.content}</div>
                         ) : (
-                          <div style={styles.noteMuted}>Sin contenido</div>
+                          <div className="note-muted">Sin contenido</div>
                         )}
 
-                        <div style={styles.noteActions}>
+                        <div className="note-actions">
                           <button
-                            style={styles.smallBtn}
+                            className="notes-btn notes-btn-small"
                             onClick={() => startEdit(n)}
                           >
                             Editar
                           </button>
                           <button
-                            style={{ ...styles.smallBtn, ...styles.dangerBtn }}
+                            className="notes-btn notes-btn-small notes-btn-danger"
                             onClick={() => deleteNote(n.id)}
                           >
                             Borrar
@@ -235,40 +234,40 @@ export default function Notes() {
                       </>
                     ) : (
                       <>
-                        <div style={styles.noteTop}>
-                          <div style={styles.noteTitle}>Editando</div>
-                          <div style={styles.noteDate}>#{n.id}</div>
+                        <div className="note-top">
+                          <div className="note-title">Editando</div>
+                          <div className="note-date">#{n.id}</div>
                         </div>
 
-                        <label style={styles.label}>
+                        <label className="notes-label">
                           Título
                           <input
-                            style={styles.input}
+                            className="notes-input"
                             value={editTitle}
                             onChange={(e) => setEditTitle(e.target.value)}
                           />
                         </label>
 
-                        <label style={styles.label}>
+                        <label className="notes-label">
                           Contenido
                           <textarea
-                            style={styles.textarea}
+                            className="notes-textarea"
                             value={editContent}
                             onChange={(e) => setEditContent(e.target.value)}
                             rows={4}
                           />
                         </label>
 
-                        <div style={styles.noteActions}>
+                        <div className="note-actions">
                           <button
-                            style={styles.smallBtn}
+                            className="notes-btn notes-btn-small notes-btn-primary"
                             disabled={saving}
                             onClick={() => saveEdit(n.id)}
                           >
                             {saving ? "Guardando..." : "Guardar"}
                           </button>
                           <button
-                            style={styles.smallBtn}
+                            className="notes-btn notes-btn-small notes-btn-ghost"
                             type="button"
                             onClick={cancelEdit}
                           >
@@ -287,132 +286,3 @@ export default function Notes() {
     </>
   );
 }
-
-const styles = {
-  page: {
-    padding: 16,
-    background: "#f6f7fb",
-    minHeight: "calc(100vh - 64px)",
-  },
-  container: {
-    maxWidth: 980,
-    margin: "0 auto",
-  },
-  topRow: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-    gap: 12,
-    marginBottom: 12,
-  },
-  h1: { margin: 0, fontSize: 28 },
-  subtitle: { margin: "6px 0 0", color: "#555" },
-
-  card: {
-    background: "white",
-    border: "1px solid #e6e8ef",
-    borderRadius: 12,
-    padding: 14,
-    boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
-    marginBottom: 14,
-  },
-  cardTitle: { fontWeight: 700, marginBottom: 10 },
-
-  formGrid: { display: "grid", gap: 10 },
-  label: { display: "grid", gap: 6, fontSize: 13, color: "#333" },
-  input: {
-    padding: "10px 10px",
-    borderRadius: 10,
-    border: "1px solid #dfe3ee",
-    outline: "none",
-    fontSize: 14,
-    background: "white",
-  },
-  textarea: {
-    padding: "10px 10px",
-    borderRadius: 10,
-    border: "1px solid #dfe3ee",
-    outline: "none",
-    fontSize: 14,
-    resize: "vertical",
-  },
-
-  actionsRow: { display: "flex", gap: 10, alignItems: "center" },
-  primaryBtn: {
-    border: "none",
-    borderRadius: 10,
-    padding: "10px 14px",
-    fontWeight: 700,
-    background: "#111827",
-    color: "white",
-  },
-  ghostBtn: {
-    border: "1px solid #dfe3ee",
-    borderRadius: 10,
-    padding: "10px 14px",
-    background: "white",
-  },
-
-  alert: {
-    background: "#fff3f3",
-    border: "1px solid #ffd2d2",
-    color: "#7a1a1a",
-    padding: 12,
-    borderRadius: 12,
-    marginBottom: 12,
-  },
-
-  listHeader: {
-    display: "flex",
-    alignItems: "center",
-    gap: 10,
-    margin: "10px 0 10px",
-  },
-  h2: { margin: 0, fontSize: 18 },
-  badge: {
-    fontSize: 12,
-    padding: "4px 8px",
-    borderRadius: 999,
-    background: "#e9eefc",
-    border: "1px solid #d8e1ff",
-    color: "#243b88",
-  },
-
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-    gap: 12,
-  },
-  noteCard: {
-    background: "white",
-    border: "1px solid #e6e8ef",
-    borderRadius: 12,
-    padding: 14,
-    boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
-    display: "grid",
-    gap: 10,
-  },
-  noteTop: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "baseline",
-    gap: 10,
-  },
-  noteTitle: { fontWeight: 800 },
-  noteDate: { fontSize: 12, color: "#666" },
-  noteContent: { whiteSpace: "pre-wrap", color: "#222" },
-  noteMuted: { color: "#888", fontStyle: "italic" },
-
-  noteActions: { display: "flex", gap: 10 },
-  smallBtn: {
-    border: "1px solid #dfe3ee",
-    borderRadius: 10,
-    padding: "8px 10px",
-    background: "white",
-  },
-  dangerBtn: {
-    borderColor: "#ffd2d2",
-    background: "#fff3f3",
-    color: "#7a1a1a",
-  },
-};

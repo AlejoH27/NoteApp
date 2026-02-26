@@ -1,5 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../api";
+import Header from "../components/header";
+import "../styles/Profile.css";
 
 export default function Profile() {
   const [form, setForm] = useState({
@@ -7,22 +9,24 @@ export default function Profile() {
     first_name: "",
     last_name: "",
     email: "",
-    photo: null, // ✅ para mostrar la URL que venga del backend
+    photo: null, // URL del backend
   });
 
-  const [file, setFile] = useState(null); // ✅ archivo seleccionado
+  const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState("");
   const [ok, setOk] = useState("");
 
-  // Preview local (antes de guardar)
+  const fileRef = useRef(null);
+
+  // Preview local
   const previewUrl = useMemo(() => {
     if (!file) return null;
     return URL.createObjectURL(file);
   }, [file]);
 
-  // Limpia el objectURL para evitar leaks
+  // Limpia objectURL
   useEffect(() => {
     return () => {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -36,7 +40,7 @@ export default function Profile() {
     try {
       const res = await api.get("/profile/");
       setForm(res.data);
-      setFile(null); // resetea selección
+      setFile(null);
     } catch (e) {
       setErr("No se pudo cargar el perfil. ¿Sesión expirada?");
     } finally {
@@ -48,8 +52,12 @@ export default function Profile() {
     load();
   }, []);
 
-  const onChange = (k) => (e) =>
-    setForm((p) => ({ ...p, [k]: e.target.value }));
+  const onChange = (k) => (e) => setForm((p) => ({ ...p, [k]: e.target.value }));
+
+  const onPickFile = (e) => {
+    const f = e.target.files?.[0] || null;
+    setFile(f);
+  };
 
   const onSave = async (e) => {
     e.preventDefault();
@@ -58,14 +66,12 @@ export default function Profile() {
     setSaving(true);
 
     try {
-      // ✅ FormData para soportar foto + campos normales
       const fd = new FormData();
       fd.append("username", form.username || "");
       fd.append("first_name", form.first_name || "");
       fd.append("last_name", form.last_name || "");
-      if (file) fd.append("photo", file); // ✅ clave: "photo"
+      if (file) fd.append("photo", file); // clave: "photo"
 
-      // ✅ NO fuerces Content-Type; axios lo pone con boundary
       const res = await api.patch("/profile/", fd);
 
       setForm(res.data);
@@ -79,74 +85,112 @@ export default function Profile() {
     }
   };
 
-  if (loading) return <div style={{ padding: 20 }}>Cargando perfil...</div>;
+  if (loading) return <div className="profile-loading">Cargando perfil...</div>;
 
-  const currentPhoto = form.photo; // URL del backend
+  const currentPhoto = form.photo;
   const shownPhoto = previewUrl || currentPhoto;
 
   return (
-    <div style={{ maxWidth: 520, margin: "60px auto", padding: 16 }}>
-      <h2>Perfil</h2>
+    <>
+      <Header title="Notas" />
 
-      <form onSubmit={onSave} style={{ display: "grid", gap: 10 }}>
-        <label>
-          Foto de perfil
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setFile(e.target.files?.[0] || null)}
-          />
-        </label>
+      <div className="profile-page">
+        <div className="profile-card">
+          <div className="profile-top">
+            <h2 className="profile-title">Perfil</h2>
+            <p className="profile-subtitle">
+              Actualiza tu información. El email es de solo lectura.
+            </p>
+          </div>
 
-        {shownPhoto && (
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <img
-              src={shownPhoto}
-              alt="Foto de perfil"
-              style={{
-                width: 90,
-                height: 90,
-                borderRadius: "50%",
-                objectFit: "cover",
-                border: "1px solid #ddd",
-              }}
-            />
-            <div style={{ fontSize: 13, opacity: 0.8 }}>
-              {previewUrl ? "Vista previa (aún no guardada)" : "Foto actual"}
+          <div className="profile-header">
+            <div className="avatar-wrap">
+              <img
+                src={shownPhoto || "https://via.placeholder.com/150?text=Avatar"}
+                alt="Foto de perfil"
+              />
+            </div>
+
+            <div className="profile-header-right">
+              <div className="file-row">
+                <button
+                  type="button"
+                  className="file-button"
+                  onClick={() => fileRef.current?.click()}
+                >
+                  Seleccionar foto
+                </button>
+
+                <span className="file-hint">
+                  {file ? file.name : "JPG/PNG · recomendado 400x400"}
+                </span>
+
+                <input
+                  ref={fileRef}
+                  className="hidden-file"
+                  type="file"
+                  accept="image/*"
+                  onChange={onPickFile}
+                />
+              </div>
+
+              {shownPhoto && (
+                <div className="photo-note">
+                  {previewUrl ? "Vista previa (aún no guardada)" : "Foto actual"}
+                </div>
+              )}
             </div>
           </div>
-        )}
 
-        <label>
-          Usuario
-          <input value={form.username || ""} onChange={onChange("username")} />
-        </label>
+          <form className="profile-form" onSubmit={onSave}>
+            <div className="form-grid">
+              <div className="field">
+                <label>Usuario</label>
+                <input
+                  className="input"
+                  value={form.username || ""}
+                  onChange={onChange("username")}
+                  placeholder="Tu usuario"
+                />
+              </div>
 
-        <label>
-          Email (solo lectura)
-          <input value={form.email || ""} disabled />
-        </label>
+              <div className="field">
+                <label>Email (solo lectura)</label>
+                <input className="readonly" value={form.email || ""} readOnly />
+              </div>
 
-        <label>
-          Nombre
-          <input
-            value={form.first_name || ""}
-            onChange={onChange("first_name")}
-          />
-        </label>
+              <div className="field">
+                <label>Nombre</label>
+                <input
+                  className="input"
+                  value={form.first_name || ""}
+                  onChange={onChange("first_name")}
+                  placeholder="Nombre"
+                />
+              </div>
 
-        <label>
-          Apellido
-          <input value={form.last_name || ""} onChange={onChange("last_name")} />
-        </label>
+              <div className="field">
+                <label>Apellido</label>
+                <input
+                  className="input"
+                  value={form.last_name || ""}
+                  onChange={onChange("last_name")}
+                  placeholder="Apellido"
+                />
+              </div>
+            </div>
 
-        <button disabled={saving} type="submit">
-          {saving ? "Guardando..." : "Guardar cambios"}
-        </button>
+            <div className="actions">
+              <button className="btn-primary" disabled={saving} type="submit">
+                {saving ? "Guardando..." : "Guardar cambios"}
+              </button>
+            </div>
 
-        {err && <p style={{ color: "crimson" }}>{err}</p>}
-        {ok && <p style={{ color: "green" }}>{ok}</p>}
-      </form>
-    </div>
+            {err && <p className="msg msg-error">{err}</p>}
+            {ok && <p className="msg msg-ok">{ok}</p>}
+          </form>
+        </div>
+      </div>
+    </>
   );
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { api } from "../api";
+import "../styles/Register.css";
 
 export default function Register() {
   const nav = useNavigate();
@@ -26,26 +27,12 @@ export default function Register() {
 
     setLoading(true);
     try {
-      await api.post("/register/", {
-        username,
-        email,
-        password,
-        password2,
-      });
-
-      setOk("Usuario creado. Ahora inicia sesión.");
-      // redirige al login después de 1s
-      setTimeout(() => nav("/login", { replace: true }), 1000);
+      await api.post("/register/", { username, email, password, password2 });
+      setOk("¡Cuenta creada! Redirigiendo al login...");
+      setTimeout(() => nav("/login", { replace: true }), 1500);
     } catch (e2) {
       const data = e2?.response?.data;
-
-      // intenta sacar un mensaje claro del backend
-      const msg =
-        (typeof data === "string" && data) ||
-        data?.detail ||
-        (data && JSON.stringify(data)) ||
-        "No se pudo registrar. Revisa los datos.";
-
+      const msg = (typeof data === "string" && data) || data?.detail || "Error al registrar.";
       setErr(msg);
     } finally {
       setLoading(false);
@@ -53,53 +40,74 @@ export default function Register() {
   };
 
   return (
-    <div style={{ maxWidth: 420, margin: "60px auto", padding: 16 }}>
-      <h2>Registro</h2>
+    <div className="register-page">
+      <div className="register-card">
+        <div className="register-top">
+          <h2 className="register-title">Registro</h2>
+          <p className="register-subtitle">Crea tu cuenta para empezar.</p>
+        </div>
 
-      <form onSubmit={onSubmit} style={{ display: "grid", gap: 10 }}>
-        <input
-          placeholder="Usuario"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          type="text"
-          required
-        />
+        {err && <div className="register-alert register-alert--error">{err}</div>}
+        {ok && <div className="register-alert register-alert--success">{ok}</div>}
 
-        <input
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          type="email"
-          required
-        />
+        <form onSubmit={onSubmit} className="register-form">
+          <label className="register-label">
+            Usuario
+            <input
+              className="register-input"
+              placeholder="Nombre de usuario"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              type="text"
+              required
+            />
+          </label>
 
-        <input
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          type="password"
-          required
-        />
+          <label className="register-label">
+            Email
+            <input
+              className="register-input"
+              placeholder="tu@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              required
+            />
+          </label>
 
-        <input
-          placeholder="Repetir contraseña"
-          value={password2}
-          onChange={(e) => setPassword2(e.target.value)}
-          type="password"
-          required
-        />
+          <label className="register-label">
+            Contraseña
+            <input
+              className="register-input"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              required
+            />
+          </label>
 
-        <button disabled={loading} type="submit">
-          {loading ? "Creando..." : "Crear cuenta"}
-        </button>
+          <label className="register-label">
+            Repetir contraseña
+            <input
+              className="register-input"
+              placeholder="••••••••"
+              value={password2}
+              onChange={(e) => setPassword2(e.target.value)}
+              type="password"
+              required
+            />
+          </label>
 
-        {err && <p style={{ color: "crimson" }}>{err}</p>}
-        {ok && <p style={{ color: "green" }}>{ok}</p>}
-      </form>
+          <button className="register-btn" disabled={loading} type="submit">
+            {loading ? "Creando cuenta..." : "Crear cuenta"}
+          </button>
+        </form>
 
-      <p style={{ marginTop: 12 }}>
-        ¿Ya tienes cuenta? <Link to="/login">Inicia sesión</Link>
-      </p>
+        <p className="register-footer">
+          ¿Ya tienes cuenta? <Link className="register-link" to="/login">Inicia sesión</Link>
+        </p>
+      </div>
     </div>
   );
 }
