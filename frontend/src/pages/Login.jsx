@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import "../styles/Login.css";
 
@@ -79,7 +79,7 @@ export default function Login() {
         </form>
 
         <p className="login-footer">
-          ¿No tienes cuenta? <a className="login-link" href="/register">Regístrate aquí</a>
+          ¿No tienes cuenta? <Link className="login-link" to="/register">Regístrate aquí</Link>
         </p>
       </div>
     </div>
