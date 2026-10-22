@@ -1,4 +1,4 @@
-const CACHE_NAME = "NotesApp-v1";
+const CACHE_NAME = "NotesApp-v2";
 const URLS_TO_CACHE = ["/", "/index.html"];
 
 // Instalación: cachear archivos básicos
@@ -29,18 +29,23 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Estrategia simple: cache-first para peticiones de navegación
+// Network-first para navegación: siempre intenta traer el index.html más
+// reciente (para que tras un deploy apunte a los JS/CSS nuevos) y solo usa
+// la copia en caché si no hay conexión.
 self.addEventListener("fetch", (event) => {
   const req = event.request;
 
   if (req.mode === "navigate") {
     event.respondWith(
-      caches.match(req).then((cached) => {
-        return (
-          cached ||
-          fetch(req).catch(() => caches.match("/index.html")) // fallback offline
-        );
-      })
+      fetch(req)
+        .then((res) => {
+          if (res.ok) {
+            const copy = res.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put("/index.html", copy));
+          }
+          return res;
+        })
+        .catch(() => caches.match("/index.html")) // fallback offline
     );
   }
 });

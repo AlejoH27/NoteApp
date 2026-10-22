@@ -61,15 +61,15 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ["id", "username", "email", "first_name", "last_name", "photo"]
         read_only_fields = ["id", "email"]
 
-    def update (self, instance, validated_data):
+    def update(self, instance, validated_data):
         profile_data = validated_data.pop("profile", {})
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
-            instance.save()
+        instance.save()
 
-            profile, _ = Profile.objects.get_or_create(user=instance)
-        
+        profile, _ = Profile.objects.get_or_create(user=instance)
+
         if "photo" in profile_data:
             profile.photo = profile_data["photo"]
             profile.save()

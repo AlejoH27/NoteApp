@@ -17,6 +17,15 @@ api.interceptors.request.use((config) => {
 let isRefreshing = false;
 let pendingRequests = [];
 
+// Sesión vencida: borra tokens y manda al login (recarga para reiniciar el estado de la app)
+function sessionExpired() {
+  localStorage.removeItem("access");
+  localStorage.removeItem("refresh");
+  if (window.location.pathname !== "/login") {
+    window.location.replace("/login");
+  }
+}
+
 function processQueue(error, token = null) {
   pendingRequests.forEach((prom) => {
     if (error) prom.reject(error);
@@ -36,7 +45,10 @@ api.interceptors.response.use(
     }
 
     const refresh = localStorage.getItem("refresh");
-    if (!refresh) return Promise.reject(error);
+    if (!refresh) {
+      sessionExpired();
+      return Promise.reject(error);
+    }
 
     original._retry = true;
 
@@ -71,8 +83,7 @@ api.interceptors.response.use(
       return api(original);
     } catch (err) {
       processQueue(err, null);
-      localStorage.removeItem("access");
-      localStorage.removeItem("refresh");
+      sessionExpired();
       return Promise.reject(err);
     } finally {
       isRefreshing = false;
