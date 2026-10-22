@@ -41,9 +41,6 @@ CLOUDINARY_STORAGE = {
     os.getenv("CLOUDINARY_API_SECRET"),
 }
 
-print("CLOUD:", os.getenv("CLOUDINARY_CLOUD_NAME"))
-print("SECRET:", os.getenv("CLOUDINARY_API_SECRET"))
-print("STORAGE:", STORAGES)
 
 if not CLOUDINARY_STORAGE["CLOUD_NAME"]:
     print("Cloudinary no configurado : Falta CLOUDINARY_CLOUD_NAME")
@@ -52,7 +49,10 @@ if not CLOUDINARY_STORAGE["CLOUD_NAME"]:
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "insegura-dev")
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+if not SECRET_KEY:
+    from django.core.exceptions import ImproperlyConfigured
+    raise ImproperlyConfigured("Falta la variable de entorno DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False

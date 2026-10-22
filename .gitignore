@@ -1,0 +1,19 @@
+# Secretos / variables de entorno
+backend/.env
+*.env.local
+!*.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+
+# Base de datos local y archivos subidos
+backend/db.sqlite3
+backend/media/
+
+# Android (configuración local)
+frontend/android/local.properties
+frontend/android/.gradle/
+frontend/android/.idea/
