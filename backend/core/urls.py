@@ -19,11 +19,8 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .auth_views import LogoutView
-from .auth_views import RegisterView
-from .auth_views import EmailTokenObtainPairView
-from .auth_views import ProfileView
+from rest_framework_simplejwt.views import TokenRefreshView
+from .auth_views import LogoutView, RegisterView, EmailTokenObtainPairView, ProfileView
 
 
 urlpatterns = [
@@ -31,7 +28,7 @@ urlpatterns = [
 
     path("api/register/", RegisterView.as_view(), name="register"),
 
-    path("api/token/", TokenObtainPairView.as_view(), name="token"),
+    path("api/token/", EmailTokenObtainPairView.as_view(), name="token"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/logout/", LogoutView.as_view(), name="logout"),
 
